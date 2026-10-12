@@ -1,0 +1,1 @@
+function e(e){return e instanceof Error&&e.message&&e.message!==`Unauthorized`?e.message.slice(0,280):`Something went wrong. Please try again.`}export{e as t};

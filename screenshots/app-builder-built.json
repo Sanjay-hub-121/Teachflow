@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "TeachFlow",
+      "hasCanvas": false,
+      "bodyTextLen": 728,
+      "bodyTextHash": "0dc0296fc65dcf61da26902d97465b9b40da538528f173328d02ddda8e669680",
+      "bodyTextPrefix": "T TeachFlow Sign in For teachers Less work stress. More time for",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "TeachFlow",
+      "hasCanvas": false,
+      "bodyTextLen": 728,
+      "bodyTextHash": "0dc0296fc65dcf61da26902d97465b9b40da538528f173328d02ddda8e669680",
+      "bodyTextPrefix": "T TeachFlow Sign in For teachers Less work stress. More time for",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-built-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-built.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}

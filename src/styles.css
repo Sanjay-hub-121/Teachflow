@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+  --font-display: "Fraunces", Georgia, serif;
+  --color-paper: #f3efe6;
+  --color-paper-deep: #e7e0d2;
+  --color-card: #fffcf7;
+  --color-ink: #1c1915;
+  --color-ink-soft: #3d3832;
+  --color-muted: #6f675c;
+  --color-line: #e4dccf;
+  --color-line-strong: #cfc4b2;
+  --color-primary: #1f5c45;
+  --color-primary-ink: #f3faf6;
+  --color-primary-soft: #e4f2ea;
+  --color-clay: #9a4e24;
+  --color-clay-soft: #f8ece3;
+  --color-danger: #8d2e2e;
+  --color-danger-soft: #f8e8e6;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.8rem;
+  --radius-lg: 1.15rem;
+  --shadow-card: 0 1px 0 rgb(28 25 21 / 0.04), 0 16px 40px rgb(28 25 21 / 0.06);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
