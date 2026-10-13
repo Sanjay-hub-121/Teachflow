@@ -246,6 +246,7 @@ test("site title Grok App is a real name, not a sentinel", () => {
 test("published grok.me slug is still a title fallback", () => {
   const out = injectGrokPwaHead("<html><head></head></html>", {
     host: "wild-race.grok.me",
+    cwd: mkdtempSync(join(tmpdir(), "grok-og-slug-")),
   });
   assert.match(out, /property="og:title" content="Wild Race"/);
 });
@@ -307,6 +308,7 @@ test("emits og:image for a public host and prefers a custom card", () => {
     appName: "Wild Race",
     host: "wild-race.grok.me",
     site: { title: "Wild Race" },
+    cwd: mkdtempSync(join(tmpdir(), "grok-og-placeholder-")),
   });
   assert.match(
     placeholder,
@@ -327,6 +329,7 @@ test("placeholder og:image appends site.color when it is 6-digit hex", () => {
   const themed = injectGrokPwaHead("<html><head></head></html>", {
     host: "wild-race.grok.me",
     site: { title: "Wild Race", color: "#FF4D2E" },
+    cwd: mkdtempSync(join(tmpdir(), "grok-og-themed-")),
   });
   assert.match(
     themed,
@@ -336,6 +339,7 @@ test("placeholder og:image appends site.color when it is 6-digit hex", () => {
   const invalid = injectGrokPwaHead("<html><head></head></html>", {
     host: "wild-race.grok.me",
     site: { title: "Wild Race", color: "red" },
+    cwd: mkdtempSync(join(tmpdir(), "grok-og-invalid-")),
   });
   assert.doesNotMatch(invalid, /color=/);
 
