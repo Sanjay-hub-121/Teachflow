@@ -1,13 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { EVENT_KINDS, PRIORITIES, TASK_CATEGORIES, categoryLabel } from "@/lib/teachflow/categories";
-import { formatDay } from "@/lib/teachflow/time";
 import type { TaskDraft, TaskItem } from "./types";
+import { dueLabel } from "./task-form-utils";
 import { Button, Field, Select, Status, TextArea, TextInput } from "./ui";
-
-export function dueLabel(dueDate: string | null, dueTime: string | null, timeZone: string) {
-  if (!dueDate) return "No due date";
-  return dueTime ? `${formatDay(dueDate, timeZone)} at ${dueTime}` : formatDay(dueDate, timeZone);
-}
 
 export function TaskSummary({
   task,

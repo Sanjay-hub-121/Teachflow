@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { attempt } from "@/components/tf/actions";
-import { dueLabel } from "@/components/tf/task-form";
+import { dueLabel } from "@/components/tf/task-form-utils";
 import type { TaskItem } from "@/components/tf/types";
 import { Button, Card, Empty, LoadGate, PageHeader, Status } from "@/components/tf/ui";
 import { useData } from "@/components/tf/use-data";

@@ -8,8 +8,8 @@
  * copy from `migrations/auth/` into `migrations/` when an app turns sign-in on:
  * a database that already has `0001_auth.sql` will not re-run it.
  *
- * Neither applier descends into subdirectories, so `migrations/auth/*.sql` is
- * out of scope for both until it is copied up.
+ * The auth schema is copied into the root migration directory when auth is
+ * enabled; the nested source remains available for drift checks.
  */
 
 /**
@@ -18,7 +18,7 @@
  * @returns {string}
  */
 export function migrationName(path) {
-  return path.split("/").pop() ?? path;
+  return path.split(/[\\/]/).pop() ?? path;
 }
 
 /**

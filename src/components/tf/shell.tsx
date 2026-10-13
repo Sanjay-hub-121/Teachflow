@@ -57,7 +57,7 @@ export function AppShell() {
       stop = true;
       window.clearInterval(timer);
     };
-  }, [user?.id]);
+  }, [user]);
 
   if (isPending) {
     return (

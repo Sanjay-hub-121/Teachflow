@@ -6,8 +6,8 @@
  * in ../migrations to DATABASE_URL. Each file is applied in one transaction and
  * recorded in a `_migrations` table, so it runs once and is safe to re-run.
  *
- * The read is non-recursive, so the opt-in auth schema under migrations/auth/
- * is not applied to an app that never asked for sign-in.
+ * The auth-on schema is copied into the root migration directory, so the
+ * deploy-time read remains intentionally non-recursive.
  *
  * No DATABASE_URL (local / preview builds) -> skip; the PGLite fallback applies
  * the same files at startup instead (see src/lib/db.ts).
@@ -27,6 +27,7 @@ if (!databaseUrl) {
 }
 
 const migrationsDir = join(dirname(fileURLToPath(import.meta.url)), "..", "migrations");
+const MIGRATION_LOCK_KEY = 738421;
 
 async function main() {
   let entries;
@@ -44,7 +45,12 @@ async function main() {
 
   const pool = new pg.Pool({ connectionString: databaseUrl, max: 1 });
   const client = await pool.connect();
+  let lockAcquired = false;
   try {
+    // Serialize deploys that target the same database. PostgreSQL releases this
+    // session-scoped lock automatically if the connection is lost.
+    await client.query("SELECT pg_advisory_lock($1)", [MIGRATION_LOCK_KEY]);
+    lockAcquired = true;
     await client.query(
       "CREATE TABLE IF NOT EXISTS _migrations (name TEXT PRIMARY KEY, applied_at TIMESTAMPTZ NOT NULL DEFAULT now())",
     );
@@ -75,6 +81,9 @@ async function main() {
     }
     console.log(count ? `[migrate] done — ${count} migration(s) applied.` : "[migrate] up to date.");
   } finally {
+    if (lockAcquired) {
+      await client.query("SELECT pg_advisory_unlock($1)", [MIGRATION_LOCK_KEY]).catch(() => undefined);
+    }
     client.release();
     await pool.end();
   }

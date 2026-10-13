@@ -111,7 +111,15 @@ function main(argv) {
     process.exit(2);
   }
   const env = mergeAppEnv(readAppEnv(projectRoot()), process.env);
-  const child = spawn(command, args, { stdio: "inherit", env });
+  // Windows cannot spawn npm's `.cmd` shims by their bare command name.
+  // Resolve the shim here so the same wrapper works on Windows and POSIX hosts.
+  const executable = process.platform === "win32" ? `${command}.cmd` : command;
+  const child = spawn(executable, args, {
+    stdio: "inherit",
+    env,
+    // Windows `.cmd` shims require a shell when launched from child_process.
+    shell: process.platform === "win32",
+  });
   // The dev server is long-running and is stopped by signalling this wrapper.
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
     process.on(signal, () => child.kill(signal));

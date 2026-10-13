@@ -1,1 +1,0 @@
-import{i as e}from"./index-hLKQg5Ua.js";import{t}from"./errors-CBF7w7pA.js";async function n(n,r){try{let t=await n();return r&&e.success(r),t}catch(n){return e.error(t(n)),null}}export{n as t};
