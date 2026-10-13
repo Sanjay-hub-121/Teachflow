@@ -13,6 +13,7 @@ import {
   updateAccount,
 } from "@/lib/teachflow/server/account.functions";
 import { formatWhen } from "@/lib/teachflow/time";
+import { notificationPermission, requestNotificationPermission } from "@/lib/pwa/notifications";
 
 export const Route = createFileRoute("/app/settings")({ component: SettingsPage });
 
@@ -41,6 +42,7 @@ function SettingsPage() {
   const [busy, setBusy] = useState(false);
   const [code, setCode] = useState<string | null>(null);
   const [emailConfirm, setEmailConfirm] = useState("");
+  const [pushStatus, setPushStatus] = useState(notificationPermission());
   const [confirmDelete, setConfirmDelete] = useState(false);
   if (loaded.data && !seen) {
     setForm(loaded.data);
@@ -142,6 +144,19 @@ function SettingsPage() {
           </form>
         </Card>
         <div className="space-y-4">
+          <Card>
+            <h2 className="font-display text-2xl">Mobile notifications</h2>
+            <p className="mt-1 text-sm text-muted">Allow TeachFlow to show reminders on your phone, including when the app is closed.</p>
+            <p className="mt-3 text-sm" role="status">Status: {pushStatus === "granted" ? "Enabled" : pushStatus === "denied" ? "Blocked in browser settings" : "Not enabled"}</p>
+            <Button
+              className="mt-3"
+              variant="secondary"
+              disabled={pushStatus === "granted" || pushStatus === "unsupported"}
+              onClick={() => void requestNotificationPermission().then(setPushStatus)}
+            >
+              {pushStatus === "granted" ? "Notifications enabled" : "Enable notifications"}
+            </Button>
+          </Card>
           <Card>
             <h2 className="font-display text-2xl">Devices</h2>
             <LoadGate status={sessions.status} error={sessions.error} label="Loading devices">

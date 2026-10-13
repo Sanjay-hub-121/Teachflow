@@ -1,8 +1,10 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
+import { registerTeachFlowWorker } from "@/lib/pwa/notifications";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -31,6 +33,7 @@ export const Route = createRootRoute({
       </head>
       <body>
         <PreviewHostBridge />
+        <PwaBootstrap />
         <AuthProvider>
           <Outlet />
         </AuthProvider>
@@ -40,3 +43,10 @@ export const Route = createRootRoute({
     </html>
   ),
 });
+
+function PwaBootstrap() {
+  useEffect(() => {
+    void registerTeachFlowWorker();
+  }, []);
+  return null;
+}
