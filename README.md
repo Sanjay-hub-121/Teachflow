@@ -43,6 +43,10 @@ printing secret values:
 npm run check:production-env
 ```
 
+Use [`.env.example`](.env.example) as the variable-name checklist. Keep the
+real values in Vercel or another secret manager; do not commit a populated
+`.env` file.
+
 ## Environment configuration
 
 Do not commit `.env` files or secret values. The application uses these values
