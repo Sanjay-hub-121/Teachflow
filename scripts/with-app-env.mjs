@@ -113,12 +113,17 @@ function main(argv) {
   const env = mergeAppEnv(readAppEnv(projectRoot()), process.env);
   // Windows cannot spawn npm's `.cmd` shims by their bare command name.
   // Resolve the shim here so the same wrapper works on Windows and POSIX hosts.
-  const executable = process.platform === "win32" ? `${command}.cmd` : command;
+  const isWindowsShim =
+    process.platform === "win32" &&
+    !command.toLowerCase().endsWith(".exe") &&
+    !command.includes("\\") &&
+    !command.includes("/");
+  const executable = isWindowsShim ? `${command}.cmd` : command;
   const child = spawn(executable, args, {
     stdio: "inherit",
     env,
     // Windows `.cmd` shims require a shell when launched from child_process.
-    shell: process.platform === "win32",
+    shell: isWindowsShim,
   });
   // The dev server is long-running and is stopped by signalling this wrapper.
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
