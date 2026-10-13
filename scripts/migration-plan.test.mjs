@@ -63,6 +63,7 @@ test("the auth schema ships in the root migration directory", () => {
     [
       { name: "0001_auth.sql", path: "0001_auth.sql" },
       { name: "0002_teachflow.sql", path: "0002_teachflow.sql" },
+      { name: "0003_push_subscriptions.sql", path: "0003_push_subscriptions.sql" },
     ],
   );
   assert.ok(readdirSync(join(migrationsDir, "auth")).includes("0001_auth.sql"));
