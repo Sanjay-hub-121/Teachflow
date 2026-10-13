@@ -171,6 +171,10 @@ export default defineConfig(({ command, isPreview }) => ({
       ? [
           nitro({
             preset: "vercel",
+            // Keep pdf-lib as a runtime dependency. Nitro's Windows external
+            // tracer can fail to realpath pdf-lib's nested tslib copy, while
+            // Vercel's Linux build resolves the package normally.
+            rollupConfig: { external: ["pdf-lib"] },
             // Auto-registers server/middleware/* (the PWA install page +
             // manifest + head-tag middleware). Nitro v3 defaults serverDir to
             // false, so removing this silently unwires /?install=1 on deploys.
