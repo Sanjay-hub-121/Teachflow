@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, Navigate, useRouter } from "@tanstack/react-router";
-import { GROK_PROVIDERS, authClient, signIn } from "@/lib/auth/client";
+import { AUTH_PROVIDERS, authClient, signIn } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { rememberPreviewToken } from "@/components/tf/files";
 import { Button, Field, FullPageLoader, TextInput, Wordmark } from "@/components/tf/ui";
@@ -80,7 +80,7 @@ function RegisterPage() {
           <p className="mt-4 text-sm">Already registered? <Link to="/login" className="font-semibold text-primary">Sign in</Link></p>
           <div className="my-4 h-px bg-line" />
           <div className="space-y-2">
-            {GROK_PROVIDERS.map((provider) => (
+            {AUTH_PROVIDERS.map((provider) => (
               <Button key={provider.providerId} type="button" variant="secondary" className="w-full" onClick={() => void signIn(provider.providerId, { callbackURL: "/app" })}>
                 Continue with {provider.label}
               </Button>
