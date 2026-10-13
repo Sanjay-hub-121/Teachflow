@@ -13,7 +13,8 @@ import {
   updateAccount,
 } from "@/lib/teachflow/server/account.functions";
 import { formatWhen } from "@/lib/teachflow/time";
-import { notificationPermission, requestNotificationPermission } from "@/lib/pwa/notifications";
+import { notificationPermission, requestNotificationPermission, subscribeForPush } from "@/lib/pwa/notifications";
+import { savePushSubscription } from "@/lib/teachflow/server/push.functions";
 
 export const Route = createFileRoute("/app/settings")({ component: SettingsPage });
 
@@ -152,7 +153,13 @@ function SettingsPage() {
               className="mt-3"
               variant="secondary"
               disabled={pushStatus === "granted" || pushStatus === "unsupported"}
-              onClick={() => void requestNotificationPermission().then(setPushStatus)}
+              onClick={() => void requestNotificationPermission().then(async (permission) => {
+                setPushStatus(permission);
+                if (permission === "granted") {
+                  try { await subscribeForPush((data) => savePushSubscription({ data })); }
+                  catch (error) { setPushStatus("default"); void attempt(async () => { throw error; }); }
+                }
+              })}
             >
               {pushStatus === "granted" ? "Notifications enabled" : "Enable notifications"}
             </Button>
