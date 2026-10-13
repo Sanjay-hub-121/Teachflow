@@ -134,6 +134,19 @@ export function Spinner({ label = "Loading" }: { label?: string }) {
   );
 }
 
+export function FullPageLoader() {
+  return (
+    <main className="grid min-h-dvh place-items-center bg-paper px-4 text-center" aria-live="polite">
+      <div className="space-y-4">
+        <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-primary text-3xl font-semibold text-primary-ink shadow-card">T</div>
+        <p className="font-display text-2xl text-ink">TeachFlow</p>
+        <p className="text-sm text-muted">Preparing your workspace…</p>
+        <div className="mx-auto h-1.5 w-28 overflow-hidden rounded-full bg-paper-deep"><div className="h-full w-1/2 animate-pulse rounded-full bg-primary" /></div>
+      </div>
+    </main>
+  );
+}
+
 export function TextLink({ to, children }: { to: string; children: ReactNode }) {
   return (
     <Link to={to} className="font-semibold text-primary underline-offset-4 hover:underline">

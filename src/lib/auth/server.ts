@@ -77,7 +77,12 @@ const authDisabled = env("VITE_AUTH_ENABLED") === "false";
 // Broker federation creds: the deployer injects a per-app client when deployed;
 // otherwise fall back to the shared live-preview client, which the broker accepts
 // for any `*.grok-sandbox.com` callback (see `./preview`).
-const grokIssuer = env("GROK_AUTH_ISSUER") ?? GROK_ISSUER_DEFAULT;
+const configuredGrokIssuer = env("GROK_AUTH_ISSUER");
+// Never send users to a template/example hostname. If deployment variables
+// still contain the sample value, use the real broker default instead.
+const grokIssuer = configuredGrokIssuer && !configuredGrokIssuer.includes(".example")
+  ? configuredGrokIssuer
+  : GROK_ISSUER_DEFAULT;
 const grokClientId = env("GROK_AUTH_CLIENT_ID") ?? PREVIEW_CLIENT_ID;
 const grokClientSecret = env("GROK_AUTH_CLIENT_SECRET") ?? PREVIEW_CLIENT_SECRET;
 

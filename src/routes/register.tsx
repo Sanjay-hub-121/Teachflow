@@ -3,7 +3,7 @@ import { createFileRoute, Link, Navigate, useRouter } from "@tanstack/react-rout
 import { GROK_PROVIDERS, authClient, signIn } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { rememberPreviewToken } from "@/components/tf/files";
-import { Button, Field, TextInput, Wordmark } from "@/components/tf/ui";
+import { Button, Field, FullPageLoader, TextInput, Wordmark } from "@/components/tf/ui";
 
 export const Route = createFileRoute("/register")({ component: RegisterPage });
 
@@ -22,7 +22,7 @@ function RegisterPage() {
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  if (isPending) return <main className="grid min-h-dvh place-items-center bg-paper text-muted">Checking your session…</main>;
+  if (isPending) return <FullPageLoader />;
   if (user) return <Navigate to="/app" />;
 
   return (
