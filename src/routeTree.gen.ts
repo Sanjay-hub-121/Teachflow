@@ -21,6 +21,7 @@ import { Route as AppInsightsRouteImport } from './routes/app/insights'
 import { Route as AppNotificationsRouteImport } from './routes/app/notifications'
 import { Route as AppSettingsRouteImport } from './routes/app/settings'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiCronRemindersRouteImport } from './routes/api/cron/reminders'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app/documents/index'
 import { Route as AppDocumentsDocumentIdRouteImport } from './routes/app/documents/$documentId'
 import { Route as AppTasksIndexRouteImport } from './routes/app/tasks/index'
@@ -88,6 +89,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronRemindersRoute = ApiCronRemindersRouteImport.update({
+  id: '/api/cron/reminders',
+  path: '/api/cron/reminders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppDocumentsIndexRoute = AppDocumentsIndexRouteImport.update({
   id: '/documents/',
   path: '/documents/',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/app/settings': typeof AppSettingsRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/reminders': typeof ApiCronRemindersRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
   '/app/tasks/$taskId': typeof AppTasksTaskIdRoute
   '/app/templates/$templateId': typeof AppTemplatesTemplateIdRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AppSettingsRoute
   '/app': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/reminders': typeof ApiCronRemindersRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
   '/app/tasks/$taskId': typeof AppTasksTaskIdRoute
   '/app/templates/$templateId': typeof AppTemplatesTemplateIdRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/app/settings': typeof AppSettingsRoute
   '/app/': typeof AppIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/reminders': typeof ApiCronRemindersRoute
   '/app/documents/$documentId': typeof AppDocumentsDocumentIdRoute
   '/app/tasks/$taskId': typeof AppTasksTaskIdRoute
   '/app/templates/$templateId': typeof AppTemplatesTemplateIdRoute
@@ -194,6 +203,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/'
     | '/api/auth/$'
+    | '/api/cron/reminders'
     | '/app/documents/$documentId'
     | '/app/tasks/$taskId'
     | '/app/templates/$templateId'
@@ -213,6 +223,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app'
     | '/api/auth/$'
+    | '/api/cron/reminders'
     | '/app/documents/$documentId'
     | '/app/tasks/$taskId'
     | '/app/templates/$templateId'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/'
     | '/api/auth/$'
+    | '/api/cron/reminders'
     | '/app/documents/$documentId'
     | '/app/tasks/$taskId'
     | '/app/templates/$templateId'
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiCronRemindersRoute: typeof ApiCronRemindersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -336,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/reminders': {
+      id: '/api/cron/reminders'
+      path: '/api/cron/reminders'
+      fullPath: '/api/cron/reminders'
+      preLoaderRoute: typeof ApiCronRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/documents/': {
       id: '/app/documents/'
       path: '/documents'
@@ -422,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiCronRemindersRoute: ApiCronRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

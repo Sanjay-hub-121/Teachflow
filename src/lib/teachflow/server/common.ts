@@ -3,6 +3,7 @@ import { getSql, type Sql } from "@/lib/db";
 import { AppError } from "../errors.ts";
 import { planDeadlineReminder, reconcileDecision } from "../reminders.ts";
 import { isHHMM } from "../time.ts";
+import { sendPushToUser } from "./push.server.ts";
 
 export type ProfileRow = {
   full_name: string;
@@ -183,6 +184,7 @@ export async function processDue(sql: Sql, userId: string, timeZone: string) {
         ) on conflict (user_id, idempotency_key) do nothing`;
       await sql`update reminders set status = 'delivered', delivered_at = now(), updated_at = now(), attempt_count = attempt_count + 1, last_error = null
         where id = ${row.id} and user_id = ${userId}`;
+      await sendPushToUser(sql, userId, { title, body: "A reminder you set is ready. Open it when you have a moment.", href });
     } catch (error) {
       console.error("[teachflow] reminder delivery failed");
       await sql`update reminders set attempt_count = attempt_count + 1, last_error = 'delivery failed', updated_at = now()
