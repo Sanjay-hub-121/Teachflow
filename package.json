@@ -10,6 +10,11 @@
     },
     "pptxgenjs": {
       "image-size": "2.0.4"
+    },
+    "nitro": {
+      "unstorage": {
+        "lru-cache": "11.5.3"
+      }
     }
   },
   "scripts": {
