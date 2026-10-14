@@ -8,6 +8,7 @@ export const TASK_CATEGORIES = [
   { id: "report", label: "Reports" },
   { id: "admin", label: "Administration" },
   { id: "other", label: "Miscellaneous" },
+  { id: "custom", label: "Custom" },
 ] as const;
 
 export const EVENT_KINDS = [
@@ -16,6 +17,7 @@ export const EVENT_KINDS = [
   { id: "meeting", label: "Meeting" },
   { id: "academic", label: "Academic event" },
   { id: "institutional", label: "Institutional date" },
+  { id: "custom", label: "Custom" },
 ] as const;
 
 export const TEMPLATE_CATEGORIES = [
@@ -26,6 +28,7 @@ export const TEMPLATE_CATEGORIES = [
   { id: "schedule", label: "Schedule" },
   { id: "meeting", label: "Meeting" },
   { id: "other", label: "Other" },
+  { id: "custom", label: "Custom" },
 ] as const;
 
 export const PRIORITIES = [

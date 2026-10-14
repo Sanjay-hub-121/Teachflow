@@ -85,9 +85,17 @@ async function ask(prompt: string): Promise<{ ok: true; text: string } | { ok: f
       extra_body: { chat_template_kwargs: { enable_thinking: false } },
     }),
   });
-  if (!response.ok) return { ok: false, error: "The assistant could not answer just now. Try again in a moment." };
-  const body = (await response.json()) as { choices?: { message?: { content?: string } }[] };
-  return { ok: true, text: body.choices?.[0]?.message?.content?.trim() || "The assistant returned an empty answer." };
+  const body = (await response.json()) as {
+    choices?: { message?: { content?: string; reasoning_content?: string } }[];
+    error?: { message?: string };
+  };
+  if (!response.ok) {
+    console.error("[teachflow] NVIDIA assistant request failed", response.status, body.error?.message ?? "unknown error");
+    return { ok: false, error: "The assistant could not answer just now. Check the NVIDIA API key and try again." };
+  }
+  const message = body.choices?.[0]?.message;
+  const text = message?.content?.trim() || message?.reasoning_content?.trim() || "";
+  return { ok: true, text: text || "The assistant returned an empty answer." };
 }
 
 export const askAssistant = createServerFn({ method: "POST" })
