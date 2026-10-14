@@ -82,6 +82,7 @@ async function ask(prompt: string): Promise<{ ok: true; text: string } | { ok: f
       temperature: 0.3,
       max_tokens: 700,
       stream: false,
+      extra_body: { chat_template_kwargs: { enable_thinking: false } },
     }),
   });
   if (!response.ok) return { ok: false, error: "The assistant could not answer just now. Try again in a moment." };
