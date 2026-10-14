@@ -63,7 +63,7 @@ function TemplatesPage() {
       </Card>
       <Card className="mb-5">
         <h2 className="font-display text-2xl">Upload a file</h2>
-        <p className="mt-1 text-sm text-muted">Word, Excel, PowerPoint, or PDF, up to 4 MB. Formulas in a spreadsheet are left alone.</p>
+        <p className="mt-1 text-sm text-muted">Word, Excel, PowerPoint, or PDF, up to 3 MB. Formulas in a spreadsheet are left alone.</p>
         <form
           className="mt-3 grid gap-3 sm:grid-cols-2"
           onSubmit={(event) => {
@@ -113,7 +113,7 @@ function TemplatesPage() {
           <Field label="Note">
             <TextInput value={description} onChange={(event) => setDescription(event.target.value)} />
           </Field>
-          {file && file.size > MAX_UPLOAD ? <p className="text-sm text-danger sm:col-span-2">That file is over 4 MB.</p> : null}
+          {file && file.size > MAX_UPLOAD ? <p className="text-sm text-danger sm:col-span-2">That file is over 3 MB. Choose a smaller file so it can be uploaded safely.</p> : null}
           <Button type="submit" disabled={!file || busy === "upload" || (file?.size ?? 0) > MAX_UPLOAD}>
             {busy === "upload" ? "Reading the file…" : "Upload"}
           </Button>

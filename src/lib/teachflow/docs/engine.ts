@@ -6,7 +6,10 @@ import { PDFCheckBox, PDFDocument, PDFDropdown, PDFTextField, StandardFonts } fr
 import PptxGenJS from "pptxgenjs";
 import { type FieldDef, type FormValue, slugKey } from "../fields.ts";
 
-export const MAX_UPLOAD_BYTES = 4_000_000;
+// Uploads are sent as base64 in a server-function request. Keeping the raw
+// file below 3 MB leaves room for base64 expansion and request metadata under
+// Vercel Hobby's function body limit.
+export const MAX_UPLOAD_BYTES = 3_000_000;
 const MAX_UNZIP_BYTES = 20_000_000;
 
 export type OfficeFormat = "docx" | "xlsx" | "pptx" | "pdf";
