@@ -67,6 +67,14 @@ function ApiMonitorPage() {
               <p className="mt-5 rounded-md bg-paper-deep px-3 py-3 text-sm text-ink-soft">
                 Provider quota and remaining percentage are not exposed by NVIDIA’s API, so TeachFlow does not invent a percentage. Use the NVIDIA dashboard for account-level quota limits.
               </p>
+              <a
+                href="https://build.nvidia.com/settings/api-keys"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-4 inline-flex min-h-11 items-center rounded-md border border-line-strong bg-card px-4 text-sm font-semibold text-primary hover:bg-paper"
+              >
+                Open NVIDIA API dashboard
+              </a>
             </Card>
             <Card>
               <p className="text-sm font-semibold uppercase tracking-wide text-muted">Measured usage</p>
