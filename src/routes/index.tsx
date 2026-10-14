@@ -1,13 +1,14 @@
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { Bell, CalendarDays, FileStack, ListChecks } from "lucide-react";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
-import { Wordmark } from "@/components/tf/ui";
+import { FullPageLoader, Wordmark } from "@/components/tf/ui";
 
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
   const { user, isPending } = useCurrentUserState();
-  if (!isPending && user) return <Navigate to="/app" />;
+  if (isPending) return <FullPageLoader />;
+  if (user) return <Navigate to="/app" />;
   return (
     <main className="min-h-dvh bg-paper text-ink">
       <header className="mx-auto flex max-w-5xl items-center justify-between px-4 py-5">
