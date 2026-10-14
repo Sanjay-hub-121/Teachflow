@@ -449,7 +449,11 @@ export async function analyzeFile(filename: string, bytes: Uint8Array): Promise<
   }
   if (format === "xlsx") {
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(Buffer.from(bytes) as unknown as ExcelJS.Buffer);
+    try {
+      await workbook.xlsx.load(Buffer.from(bytes) as unknown as ExcelJS.Buffer);
+    } catch {
+      throw new AppError("This Excel workbook could not be read. Open it in Excel and save it again as .xlsx, then retry.");
+    }
     const lines: string[] = [];
     const suggested: FieldDef[] = [];
     const used = new Set<string>();
