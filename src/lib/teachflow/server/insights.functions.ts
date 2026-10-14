@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { sanitizeFields } from "../fields.ts";
 import { AppError, rethrowKnown } from "../errors.ts";
-import { db, loadProfile } from "./common.ts";
+import { db, loadProfile, nid } from "./common.ts";
 
 export const getInsights = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
@@ -63,7 +63,7 @@ export const getInsights = createServerFn({ method: "POST" })
     }
   });
 
-async function ask(prompt: string): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
+async function ask(prompt: string, userId: string): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
   const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) return { ok: false, error: "AI assistance is not configured. Everything else in TeachFlow still works." };
   const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
@@ -87,6 +87,7 @@ async function ask(prompt: string): Promise<{ ok: true; text: string } | { ok: f
   const rawBody = await response.text();
   let body: {
     choices?: { message?: { content?: string; reasoning_content?: string } }[];
+    usage?: { total_tokens?: number };
     error?: { message?: string };
   } = {};
   try {
@@ -100,6 +101,13 @@ async function ask(prompt: string): Promise<{ ok: true; text: string } | { ok: f
   }
   const message = body.choices?.[0]?.message;
   const text = message?.content?.trim() || message?.reasoning_content?.trim() || "";
+  try {
+    const sql = await db();
+    await sql`insert into assistant_api_usage (id, user_id, provider, model, total_tokens)
+      values (${nid()}, ${userId}, 'NVIDIA', 'nvidia/nemotron-3.5-lightning-30b-a3b', ${body.usage?.total_tokens ?? 0})`;
+  } catch (error) {
+    console.error("[teachflow] Could not record API usage", error instanceof Error ? error.message : "unknown error");
+  }
   return { ok: true, text: text || "The assistant returned an empty answer." };
 }
 
@@ -111,7 +119,7 @@ export const askAssistant = createServerFn({ method: "POST" })
     if (!text) throw new AppError("Write what you want help with first.");
     return { mode, text: text.slice(0, 4000) };
   })
-  .handler(async ({ data }) => {
+  .handler(async ({ context, data }) => {
     const instruction =
       data.mode === "plan"
         ? "Suggest a realistic order for this work. Return plain sentences, not a fake timetable with invented school rules."
@@ -122,7 +130,7 @@ export const askAssistant = createServerFn({ method: "POST" })
             : data.mode === "organize"
               ? "Organize the teacher's notes into short labeled points they can paste into a form."
               : 'Break this task into at most 8 short steps. Reply with JSON only: {"steps":["..."]}.';
-    const result = await ask(`${instruction}\n\nTeacher's notes:\n${data.text}`);
+    const result = await ask(`${instruction}\n\nTeacher's notes:\n${data.text}`, context.userId);
     if (!result.ok) return { ok: false as const, error: result.error, text: "", steps: [] as string[] };
     let steps: string[] = [];
     if (data.mode === "steps") {
@@ -137,6 +145,30 @@ export const askAssistant = createServerFn({ method: "POST" })
       }
     }
     return { ok: true as const, error: null, text: result.text, steps };
+  });
+
+export const getApiMonitor = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    const sql = await db();
+    const [allTime, today] = await Promise.all([
+      sql<{ requests: number; total_tokens: number }>`
+        select count(*)::int as requests, coalesce(sum(total_tokens), 0)::int as total_tokens
+        from assistant_api_usage where user_id = ${context.userId}`,
+      sql<{ requests: number; total_tokens: number }>`
+        select count(*)::int as requests, coalesce(sum(total_tokens), 0)::int as total_tokens
+        from assistant_api_usage
+        where user_id = ${context.userId} and created_at >= current_date`,
+    ]);
+    return {
+      provider: "NVIDIA",
+      model: "nvidia/nemotron-3.5-lightning-30b-a3b",
+      requests: allTime[0]?.requests ?? 0,
+      totalTokens: allTime[0]?.total_tokens ?? 0,
+      todayRequests: today[0]?.requests ?? 0,
+      todayTokens: today[0]?.total_tokens ?? 0,
+      providerQuotaAvailable: false,
+    };
   });
 
 export const suggestTemplateFields = createServerFn({ method: "POST" })
@@ -154,6 +186,7 @@ export const suggestTemplateFields = createServerFn({ method: "POST" })
       const preview = String(analysis.textPreview ?? "").slice(0, 6000);
       const result = await ask(
         `Look at this teacher document excerpt and propose editable fields. Reply with JSON only: {"fields":[{"label":"","type":"text|textarea|number|date|select|repeat","required":false,"token":"optional existing placeholder name"}]}. Only set token if that {{name}} appears in the excerpt. Do not invent facts.\n\n${preview}`,
+        context.userId,
       );
       if (!result.ok) return { ok: false as const, error: result.error, fields: [] as ReturnType<typeof sanitizeFields> };
       const match = result.text.match(/\{[\s\S]*\}/);

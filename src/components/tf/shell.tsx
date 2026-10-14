@@ -4,6 +4,7 @@ import {
   Bell,
   CalendarDays,
   ChartColumn,
+  Activity,
   Files,
   LayoutDashboard,
   Library,
@@ -27,6 +28,7 @@ const NAV = [
   { to: "/app/notifications", label: "Alerts", icon: Bell },
   { to: "/app/insights", label: "Insights", icon: ChartColumn },
   { to: "/app/assistant", label: "Assistant", icon: Sparkles },
+  { to: "/app/api-monitor", label: "API Monitor", icon: Activity },
   { to: "/app/settings", label: "Settings", icon: Settings },
 ] as const;
 

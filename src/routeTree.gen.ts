@@ -15,6 +15,7 @@ import { Route as ForgotRouteImport } from './routes/forgot'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppApiMonitorRouteImport } from './routes/app/api-monitor'
 import { Route as AppAssistantRouteImport } from './routes/app/assistant'
 import { Route as AppCalendarRouteImport } from './routes/app/calendar'
 import { Route as AppInsightsRouteImport } from './routes/app/insights'
@@ -57,6 +58,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppApiMonitorRoute = AppApiMonitorRouteImport.update({
+  id: '/api-monitor',
+  path: '/api-monitor',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppAssistantRoute = AppAssistantRouteImport.update({
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/forgot': typeof ForgotRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/app/api-monitor': typeof AppApiMonitorRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/calendar': typeof AppCalendarRoute
   '/app/insights': typeof AppInsightsRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/forgot': typeof ForgotRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/app/api-monitor': typeof AppApiMonitorRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/calendar': typeof AppCalendarRoute
   '/app/insights': typeof AppInsightsRoute
@@ -173,6 +181,7 @@ export interface FileRoutesById {
   '/forgot': typeof ForgotRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/app/api-monitor': typeof AppApiMonitorRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/calendar': typeof AppCalendarRoute
   '/app/insights': typeof AppInsightsRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/forgot'
     | '/login'
     | '/register'
+    | '/app/api-monitor'
     | '/app/assistant'
     | '/app/calendar'
     | '/app/insights'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/forgot'
     | '/login'
     | '/register'
+    | '/app/api-monitor'
     | '/app/assistant'
     | '/app/calendar'
     | '/app/insights'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/forgot'
     | '/login'
     | '/register'
+    | '/app/api-monitor'
     | '/app/assistant'
     | '/app/calendar'
     | '/app/insights'
@@ -305,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/api-monitor': {
+      id: '/app/api-monitor'
+      path: '/api-monitor'
+      fullPath: '/app/api-monitor'
+      preLoaderRoute: typeof AppApiMonitorRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/app/assistant': {
@@ -402,6 +421,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteRouteChildren {
+  AppApiMonitorRoute: typeof AppApiMonitorRoute
   AppAssistantRoute: typeof AppAssistantRoute
   AppCalendarRoute: typeof AppCalendarRoute
   AppInsightsRoute: typeof AppInsightsRoute
@@ -417,6 +437,7 @@ interface AppRouteRouteChildren {
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppApiMonitorRoute: AppApiMonitorRoute,
   AppAssistantRoute: AppAssistantRoute,
   AppCalendarRoute: AppCalendarRoute,
   AppInsightsRoute: AppInsightsRoute,
