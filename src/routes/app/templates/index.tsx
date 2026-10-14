@@ -17,7 +17,7 @@ const STARTERS = [
   ["report", "Report"],
 ] as const;
 
-const MAX_UPLOAD = 4_000_000;
+const MAX_UPLOAD = 3_000_000;
 
 function TemplatesPage() {
   const navigate = useNavigate();

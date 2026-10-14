@@ -5,6 +5,7 @@ import PizZip from "pizzip";
 import { PDFCheckBox, PDFDocument, PDFDropdown, PDFTextField, StandardFonts } from "pdf-lib";
 import PptxGenJS from "pptxgenjs";
 import { type FieldDef, type FormValue, slugKey } from "../fields.ts";
+import { AppError } from "../errors.ts";
 
 // Uploads are sent as base64 in a server-function request. Keeping the raw
 // file below 3 MB leaves room for base64 expansion and request metadata under
@@ -413,7 +414,7 @@ async function buildAnswerPdf(fields: FieldDef[], value: Record<string, FormValu
 
 export async function analyzeFile(filename: string, bytes: Uint8Array): Promise<Analysis> {
   if (bytes.length === 0) throw new Error("The file is empty.");
-  if (bytes.length > MAX_UPLOAD_BYTES) throw new Error("Files must be 4 MB or smaller.");
+  if (bytes.length > MAX_UPLOAD_BYTES) throw new AppError("Files must be 3 MB or smaller.");
   const format = detectFormat(filename, bytes);
   if (!format) throw new Error("Upload a DOCX, XLSX, PPTX, or PDF file. The file contents must match the extension.");
   const notes: string[] = [];
