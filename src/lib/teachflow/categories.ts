@@ -42,6 +42,7 @@ export type EventKind = (typeof EVENT_KINDS)[number]["id"];
 export type Priority = (typeof PRIORITIES)[number]["id"];
 
 export function categoryLabel(id: string): string {
+  if (id.startsWith("custom:")) return id.slice("custom:".length) || "Custom";
   return (
     TASK_CATEGORIES.find((item) => item.id === id)?.label ??
     TEMPLATE_CATEGORIES.find((item) => item.id === id)?.label ??
@@ -50,15 +51,16 @@ export function categoryLabel(id: string): string {
 }
 
 export function eventKindLabel(id: string): string {
+  if (id.startsWith("custom:")) return id.slice("custom:".length) || "Custom";
   return EVENT_KINDS.find((item) => item.id === id)?.label ?? "Event";
 }
 
 export function isTaskCategory(id: string): id is TaskCategory {
-  return TASK_CATEGORIES.some((item) => item.id === id);
+  return TASK_CATEGORIES.some((item) => item.id === id) || id.startsWith("custom:") && id.length > "custom:".length;
 }
 
 export function isEventKind(id: string): id is EventKind {
-  return EVENT_KINDS.some((item) => item.id === id);
+  return EVENT_KINDS.some((item) => item.id === id) || id.startsWith("custom:") && id.length > "custom:".length;
 }
 
 export function isPriority(id: string): id is Priority {
@@ -66,5 +68,5 @@ export function isPriority(id: string): id is Priority {
 }
 
 export function isTemplateCategory(id: string): boolean {
-  return TEMPLATE_CATEGORIES.some((item) => item.id === id);
+  return TEMPLATE_CATEGORIES.some((item) => item.id === id) || id.startsWith("custom:") && id.length > "custom:".length;
 }

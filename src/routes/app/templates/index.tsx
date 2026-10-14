@@ -97,12 +97,17 @@ function TemplatesPage() {
             <TextInput value={name} onChange={(event) => setName(event.target.value)} placeholder="Optional" />
           </Field>
           <Field label="Category">
-            <Select value={category} onChange={(event) => setCategory(event.target.value)}>
+            <Select value={category.startsWith("custom:") ? "custom" : category} onChange={(event) => setCategory(event.target.value === "custom" ? "custom:" : event.target.value)}>
               {TEMPLATE_CATEGORIES.map((item) => (
                 <option key={item.id} value={item.id}>{item.label}</option>
               ))}
             </Select>
           </Field>
+          {category.startsWith("custom:") ? (
+            <Field label="Custom template type">
+              <TextInput required autoFocus value={category.slice("custom:".length)} placeholder="e.g. Observation form" onChange={(event) => setCategory(`custom:${event.target.value.trim()}`)} />
+            </Field>
+          ) : null}
           <Field label="File">
             <TextInput
               type="file"

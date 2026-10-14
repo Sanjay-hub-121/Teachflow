@@ -57,12 +57,23 @@ export function TaskFields({
         <TextInput value={draft.title} required maxLength={160} onChange={(event) => set({ title: event.target.value })} />
       </Field>
       <Field label="Category">
-        <Select value={draft.category} onChange={(event) => set({ category: event.target.value })}>
+        <Select value={draft.category.startsWith("custom:") ? "custom" : draft.category} onChange={(event) => set({ category: event.target.value === "custom" ? "custom:" : event.target.value })}>
           {TASK_CATEGORIES.map((item) => (
             <option key={item.id} value={item.id}>{item.label}</option>
           ))}
         </Select>
       </Field>
+      {draft.category.startsWith("custom:") ? (
+        <Field label="Custom work name">
+          <TextInput
+            required
+            autoFocus
+            value={draft.category.slice("custom:".length)}
+            placeholder="e.g. Science fair planning"
+            onChange={(event) => set({ category: `custom:${event.target.value.trim()}` })}
+          />
+        </Field>
+      ) : null}
       <div className="sm:col-span-2">
         <Field label="What has to happen">
           <TextArea value={draft.description} onChange={(event) => set({ description: event.target.value })} />

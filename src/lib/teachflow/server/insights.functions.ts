@@ -80,17 +80,22 @@ async function ask(prompt: string): Promise<{ ok: true; text: string } | { ok: f
         { role: "user", content: prompt.slice(0, 5000) },
       ],
       temperature: 0.3,
-      max_tokens: 700,
+      max_tokens: 1024,
       stream: false,
-      extra_body: { chat_template_kwargs: { enable_thinking: false } },
     }),
   });
-  const body = (await response.json()) as {
+  const rawBody = await response.text();
+  let body: {
     choices?: { message?: { content?: string; reasoning_content?: string } }[];
     error?: { message?: string };
-  };
+  } = {};
+  try {
+    body = JSON.parse(rawBody) as typeof body;
+  } catch {
+    // Keep the generic user-facing message while logging the provider response.
+  }
   if (!response.ok) {
-    console.error("[teachflow] NVIDIA assistant request failed", response.status, body.error?.message ?? "unknown error");
+    console.error("[teachflow] NVIDIA assistant request failed", response.status, body.error?.message ?? rawBody.slice(0, 500));
     return { ok: false, error: "The assistant could not answer just now. Check the NVIDIA API key and try again." };
   }
   const message = body.choices?.[0]?.message;

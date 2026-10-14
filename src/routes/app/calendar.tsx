@@ -248,12 +248,17 @@ function CalendarPage() {
                   <TextInput required value={draft.title} onChange={(event) => setDraft({ ...draft, title: event.target.value })} />
                 </Field>
                 <Field label="Type">
-                  <Select value={draft.kind} onChange={(event) => setDraft({ ...draft, kind: event.target.value })}>
+                  <Select value={draft.kind.startsWith("custom:") ? "custom" : draft.kind} onChange={(event) => setDraft({ ...draft, kind: event.target.value === "custom" ? "custom:" : event.target.value })}>
                     {EVENT_KINDS.map((item) => (
                       <option key={item.id} value={item.id}>{item.label}</option>
                     ))}
                   </Select>
                 </Field>
+                {draft.kind.startsWith("custom:") ? (
+                  <Field label="Custom event name">
+                    <TextInput required autoFocus value={draft.kind.slice("custom:".length)} placeholder="e.g. Science fair" onChange={(event) => setDraft({ ...draft, kind: `custom:${event.target.value.trim()}` })} />
+                  </Field>
+                ) : null}
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field label="Starts">
                     <TextInput type="date" required value={draft.startDate} onChange={(event) => setDraft({ ...draft, startDate: event.target.value })} />
