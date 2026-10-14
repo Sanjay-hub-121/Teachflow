@@ -64,33 +64,29 @@ export const getInsights = createServerFn({ method: "POST" })
   });
 
 async function ask(prompt: string): Promise<{ ok: true; text: string } | { ok: false; error: string }> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.NVIDIA_API_KEY;
   if (!apiKey) return { ok: false, error: "AI assistance is not configured. Everything else in TeachFlow still works." };
-  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+  const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      contents: [
+      model: "nvidia/nemotron-3.5-lightning-30b-a3b",
+      messages: [
         {
-          role: "user",
-          parts: [
-            {
-              text: `You help a teacher organize their own work. Never invent institutional policies, student records, exam-board rules, or official facts. If something is unknown, say the teacher should check it. Keep the answer practical and short.\n\n${prompt.slice(0, 5000)}`,
-            },
-          ],
+          role: "system",
+          content:
+            "You help a teacher organize their own work. Never invent institutional policies, student records, exam-board rules, or official facts. If something is unknown, say the teacher should check it. Keep the answer practical and short.",
         },
+        { role: "user", content: prompt.slice(0, 5000) },
       ],
-      generationConfig: { temperature: 0.3, maxOutputTokens: 700 },
+      temperature: 0.3,
+      max_tokens: 700,
+      stream: false,
     }),
   });
   if (!response.ok) return { ok: false, error: "The assistant could not answer just now. Try again in a moment." };
-  const body = (await response.json()) as {
-    candidates?: { content?: { parts?: { text?: string }[] } }[];
-  };
-  return {
-    ok: true,
-    text: body.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("").trim() || "The assistant returned an empty answer.",
-  };
+  const body = (await response.json()) as { choices?: { message?: { content?: string } }[] };
+  return { ok: true, text: body.choices?.[0]?.message?.content?.trim() || "The assistant returned an empty answer." };
 }
 
 export const askAssistant = createServerFn({ method: "POST" })
